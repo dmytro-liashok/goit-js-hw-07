@@ -1,6 +1,7 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 const galleryListEl = document.querySelector(".gallery");
+let modal;
 
 function createGallery(galleryItems) {
   let srtGalleryHTML = galleryItems
@@ -31,14 +32,18 @@ function onImgClick(event) {
 
 function modalEvent(event) {
   const imgSrc = event.target.dataset.source;
-  const modal = basicLightbox.create(`<img src="${imgSrc}">`);
-  modal.show();
-  document.addEventListener("keydown", () => {
-    onEscClose(modal);
+  modal = basicLightbox.create(`<img src="${imgSrc}">`, {
+    onShow: () => {
+      document.addEventListener("keydown", onEscClose);
+    },
+    onClose: () => {
+      document.removeEventListener("keydown", onEscClose);
+    },
   });
+  modal.show();
 }
 
-function onEscClose(modal) {
+function onEscClose(event) {
   if (event.code === "Escape") {
     modal.close();
   }
